@@ -51,3 +51,8 @@ h2{
 .btn-right{
   margin-left: 10px;
 }
+@media(max-width: 900px){
+  body{
+    padding: 0
+  }
+}
