@@ -1,47 +1,88 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
-</script>
-
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
+  <div class="app">
+    <h1>
+      Сотрудники
+    </h1>
+    <button type="button" :class="['btn', 'btn-primary']" @click="toggleView">Сменить представление</button>
+    <button type="button" :class="['btn','btn-right', themeBtn]" @click="toggleTheme">Сменить тему</button>
+    <h2>Список</h2>
+    <EmployeeTable :employees="flattenedEmployees" v-if="!isNestedView" />
+    <EmployeeList :items="employees" v-else />
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
+    <div class="total-salary">Общая сумма зарплат: {{ totalSalary }}</div>
+  </div>
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
-}
+<script>
+import EmployeeList from './components/EmployeeList.vue';
+import EmployeeTable from './components/EmployeeTable.vue';
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
+export default {
+  components: {
+    EmployeeList,
+    EmployeeTable
+  },
+  data() {
+    return {
+      employees: [
+        { type: 'user', name: 'Григоропулос Афинский', salary: 1300 },
+        { type: 'user', name: 'Афина Совинская', salary: 1300 },
+        {
+          type: 'group',
+          name: 'Отдел тестирования',
+          childs: [
+            { type: 'user', name: 'Иннокентий', salary: 200 },
+            { type: 'user', name: 'Болик', salary: 300 },
+            {
+              type: 'group',
+              name: 'Группа веселых ребят',
+              childs: [
+                { type: 'user', name: 'Клоунесса', salary: 600 },
+                { type: 'user', name: 'Дрессировщица пользователей', salary: 900 },
+              ],
+            },
+          ],
+        },
+      ],
+      isNestedView: true,
+      themeLight: true,
+      themeBtn: 'btn-dark'
+    };
+  },
+  computed: {
+    flattenedEmployees() {
+      const flatten = (items) => {
+        return items.reduce((acc, item) => {
+          if (item.type === 'user') {
+            acc.push(item);
+          } else if (item.type === 'group' && item.childs) {
+            acc = acc.concat(flatten(item.childs));
+          }
+          return acc;
+        }, []);
+      };
+      return flatten(this.employees);
+    },
+    totalSalary() {
+      return this.flattenedEmployees.reduce((sum, employee) => sum + employee.salary, 0);
+    }
+  },
+  methods: {
+    toggleView() {
+      this.isNestedView = !this.isNestedView;
+    },
+    toggleTheme() {
+      this.themeLight = !this.themeLight
+      if (this.themeLight){
+        this.themeBtn = 'btn-dark'
+        document.body.classList.add('theme-light');
+        document.body.classList.remove('theme-dark');
+      } else {
+        this.themeBtn = 'btn-light'
+        document.body.classList.add('theme-dark');
+        document.body.classList.remove('theme-light');
+      }
+    }
   }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-}
-</style>
+};
+</script>
