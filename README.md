@@ -1,20 +1,22 @@
 # Лист сотрудников и зарплат
 
-Проект выполнен на фреймворке Vue
+Проект выполнен на фреймворке Vue и Bootstrap
 
-## Project Setup
+Демонстрация проекта по ссылке https://itwasjoke.github.io/employee-list/
+
+## Установка зависимостей
 
 ```sh
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+### Компиляция проекта в реальном времени
 
 ```sh
 npm run dev
 ```
 
-### Compile and Minify for Production
+### Сборка проекта в папку dist
 
 ```sh
 npm run build
